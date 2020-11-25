@@ -1,0 +1,18 @@
+{
+  "package": "",
+  "name": "",
+  "icon": "G:\\Game Project\\demo-game-mouse-hit-master\\assets\\res\\texture\\hall.png",
+  "versionName": "",
+  "versionCode": "",
+  "minPlatformVersion": "",
+  "deviceOrientation": "portrait",
+  "logLevel": "log",
+  "npmPath": "",
+  "tinyPackageMode": false,
+  "tinyPackageServer": "",
+  "useDebugKey": true,
+  "privatePath": "",
+  "certificatePath": "",
+  "disabledMode": "disabled is-disabled",
+  "md5Cache": false
+}

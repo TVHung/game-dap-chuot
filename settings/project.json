@@ -1,9 +1,5 @@
 {
-  "group-list": [
-    "default",
-    "mouse",
-    "hammer"
-  ],
+  "assets-sort-type": "name",
   "collision-matrix": [
     [
       true
@@ -19,22 +15,13 @@
       false
     ]
   ],
-  "excluded-modules": [
-    "3D Physics/Builtin"
-  ],
-  "last-module-event-record-time": 0,
-  "design-resolution-width": 960,
   "design-resolution-height": 640,
-  "fit-width": false,
-  "fit-height": true,
-  "use-project-simulator-setting": false,
-  "simulator-orientation": false,
-  "use-customize-simulator": true,
-  "simulator-resolution": {
-    "height": 640,
-    "width": 960
-  },
-  "assets-sort-type": "name",
+  "design-resolution-width": 960,
+  "excluded-modules": [
+    "3D Physics/cannon.js",
+    "3D Physics/Builtin",
+    "3D Particle"
+  ],
   "facebook": {
     "appID": "",
     "audience": {
@@ -45,5 +32,20 @@
       "enable": false
     }
   },
+  "fit-height": true,
+  "fit-width": false,
+  "group-list": [
+    "default",
+    "mouse",
+    "hammer"
+  ],
+  "last-module-event-record-time": 1603878429119,
+  "simulator-orientation": false,
+  "simulator-resolution": {
+    "height": 640,
+    "width": 960
+  },
+  "use-customize-simulator": true,
+  "use-project-simulator-setting": false,
   "start-scene": "current"
 }

@@ -20,8 +20,8 @@ cc.Class({
     },
 
     onLoad () {
-        var colliderManager = cc.director.getCollisionManager();        //truy cập hệ thống va chạm 
-        colliderManager.enabled = true;                                 //và bật nó lên vì ban đầu bị tắt
+        var colliderManager = cc.director.getCollisionManager();
+        colliderManager.enabled = true;    //bật hệ thống bắt va chạm
         // colliderManager.enabledDebugDraw = true;
     },
 

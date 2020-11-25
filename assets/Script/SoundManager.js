@@ -72,6 +72,9 @@ cc.Class({
                 case "click":
                     this._EffectId = cc.audioEngine.playEffect(this.audioClipPool[5], loop);
                     break;
+                case "clickWrong":
+                    this._EffectId = cc.audioEngine.playEffect(this.audioClipPool[6], loop);
+                    break;
                 default:
                     console.error("Command is invalid");
             }

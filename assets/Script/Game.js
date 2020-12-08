@@ -85,12 +85,19 @@ cc.Class({
             type: cc.Label
         },
 
+        character: {
+            default: null,
+            type: cc.Node
+        },
+
         _mouseNode: null,           //khai báo node chuột
         _mouseIndexArr: [],         //mảng ghi lại số lỗ của của mỗi con chuột ngẫu nhiên
         _times: 0,                  //thời gian
         _isRunning: true,           //điều kiện chạy game
         _score: 0,                   //khởi tạo điểm bằng 0
         arrLetter: "",
+        _checkCovu1: true,
+        _checkCovu2: true,
     },
 
     onLoad(){
@@ -105,7 +112,6 @@ cc.Class({
         this.initGameData();
         this.onPlayGame();
         this.initEventListener();
-        this.node.getComponent("SoundManager").playBackGroundSound();     //bật âm thanh khi bắt đầu game
     },
 
     initGameData () {                           //điểm khi đập vào mèo
@@ -160,7 +166,7 @@ cc.Class({
         this.node.on(cc.Node.EventType.TOUCH_END, (event)=>{        //TOUCH_END: khi ngón tay dời khỏi màn hình
             this.onHammerClicked();                                 //khi thả chuột thì bật lại  
             setTimeout(()=>{
-                this.onBeCreateHammerEvent(2000, 2000);
+                this.onBeCreateHammerEvent(0, 2000);
             },200);                             
         },this);
         
@@ -190,8 +196,26 @@ cc.Class({
             if(this._score < Level.level1){
                 mouseAmount = 1;
             }else if(this._score >= Level.level1 && this._score < Level.level2){
+                if(this._score >= Level.level1 && this._checkCovu1 === true){
+                    this._checkCovu1 = false;
+                    cc.find("Canvas/Covu/mess").getComponent(cc.Label).string = 'Con làm tốt lắm!';
+                    this.character.getComponent(cc.Animation).play('covuIn');
+                    this.node.getComponent("SoundManager").playEffectSound("quaman", false);
+                    setTimeout(() => {
+                        this.character.getComponent(cc.Animation).play('covuOut');
+                    }, 2000);
+                }
                 mouseAmount = Math.floor(Math.random() * 2) + 2;
             }else{
+                if(this._score >= Level.level2 && this._checkCovu2 === true){
+                    this._checkCovu2 = false;
+                    cc.find("Canvas/Covu/mess").getComponent(cc.Label).string = 'Con làm tốt lắm!';
+                    this.character.getComponent(cc.Animation).play('covuIn');
+                    this.node.getComponent("SoundManager").playEffectSound("quaman", false);
+                    setTimeout(() => {
+                        this.character.getComponent(cc.Animation).play('covuOut');
+                    }, 2000);
+                }
                 mouseAmount = Math.floor(Math.random() * 2) + 4;
             }
             cc.log("so chuot: " + mouseAmount);
@@ -204,6 +228,7 @@ cc.Class({
                     var mouseNode = this.mouseNodes.children[randomNodeIndex].getChildByName("Sp Mouse");
                     var randomText = this.randomTextFollowLevel();
                     this.text[randomNodeIndex].string = randomText;
+                    this.text[randomNodeIndex].node.color = new cc.Color(255, 0, 0);            //change color
                     if(randomText === this.arrLetter.split(' ')[0] || randomText === this.arrLetter.split(' ')[1]){
                         tag = 0;
                     }else{
@@ -288,7 +313,7 @@ cc.Class({
 
     countDownScheduleCallBack () {
         this.timeRollerBar.fillStart += 1/600;
-        if (this.timeRollerBar.fillStart === this.timeRollerBar.fillRange) {
+        if (this.timeRollerBar.fillStart === this.timeRollerBar.fillRange || this._score === Level.level3) {
             this.onBeCreateHammerEvent(2000, 2000);
             this.unschedule(this.countDownScheduleCallBack);  // huy tinh gio
             this.unEventListener();
@@ -342,7 +367,7 @@ cc.Class({
         //nếu đang va chạm với con chuột và con chuột còn sống và còn tồn tại trong sp bg
         if (this._mouseNode && this._mouseNode.getComponent("ColliderManager")._isCollider && this._mouseNode.getComponent("MouseManager")._isLive && cc.find("Canvas/Sp Game Bg")) {
             if(this._mouseNode.getComponent("MouseManager")._tag === 0){
-                this.node.getComponent("SoundManager").playEffectSound("score");    //âm thanh điểm
+                this.node.getComponent("SoundManager").playEffectSound("begin");    //âm thanh điểm
             }else{
                 this.node.getComponent("SoundManager").playEffectSound("clickWrong");
             }
@@ -366,10 +391,16 @@ cc.Class({
     },
 
     onPlayGame() {
+        this.character.getComponent(cc.Animation).play('covuIn');
+        this.node.getComponent("SoundManager").playEffectSound("start", false);
+        setTimeout(() => {
+            this.character.getComponent(cc.Animation).play('covuOut');
+        }, 3500);
+        cc.find("Canvas/Covu/mess").getComponent(cc.Label).string = 'Bắt đầu chơi nào!';
+        setTimeout(() => {
             this.node.getComponent("SoundManager").playBackGroundSound();   //play âm thanh
-            // cc.find("Canvas/Sp Hall Bg").active = false;                    //non active màn giới thiệu
-            // cc.find("Canvas/Sp Game Bg").active = true;                     //active màn chơi
-            this.startTimeRoller();                                         //Bắt đầu tính giờ
+            this.startTimeRoller();  
+        }, 4000);                                       //Bắt đầu tính giờ
     },
 
     onScoreTable() {
@@ -403,11 +434,19 @@ cc.Class({
     
     //tiếng game thắng trò chơi
     passGame() {
+        cc.find("Canvas/Covu/mess").getComponent(cc.Label).string = 'Chúc mừng con đã vượt \nqua thử thách!';
+        this.node.getComponent("SoundManager").stopAll();   //thì tắt hết âm thanh
+        this.character.getComponent(cc.Animation).play('covuIn');
+        this.node.getComponent("SoundManager").playEffectSound("thang", false);
         this.node.getComponent("SoundManager").playEffectSound("pass", false);
     },
 
     //tiếng game thua trò chơi
     loseGame () {
+        cc.find("Canvas/Covu/mess").getComponent(cc.Label).string = 'Con cần cố gắng hơn nữa!';
+        this.node.getComponent("SoundManager").stopAll();   //thì tắt hết âm thanh
+        this.character.getComponent(cc.Animation).play('covuIn');
+        this.node.getComponent("SoundManager").playEffectSound("thua", false);
         this.node.getComponent("SoundManager").playEffectSound("lose", false);
     },
 

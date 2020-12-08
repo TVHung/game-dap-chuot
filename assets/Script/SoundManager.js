@@ -54,7 +54,6 @@ cc.Class({
         if (command !== null || command !== undefined) {
             switch (command) {
                 case "begin":
-                case "score":
                     this._EffectId = cc.audioEngine.playEffect(this.audioClipPool[0], loop);
                     break;
                 case "pass":
@@ -74,6 +73,18 @@ cc.Class({
                     break;
                 case "clickWrong":
                     this._EffectId = cc.audioEngine.playEffect(this.audioClipPool[6], loop);
+                    break;
+                case "start":
+                    this._EffectId = cc.audioEngine.playEffect(this.audioClipPool[7], loop);
+                    break;
+                case "quaman":
+                    this._EffectId = cc.audioEngine.playEffect(this.audioClipPool[8], loop);
+                    break;
+                case "thang":
+                    this._EffectId = cc.audioEngine.playEffect(this.audioClipPool[9], loop);
+                    break;
+                case "thua":
+                    this._EffectId = cc.audioEngine.playEffect(this.audioClipPool[10], loop);
                     break;
                 default:
                     console.error("Command is invalid");

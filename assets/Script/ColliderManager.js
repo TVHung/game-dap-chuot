@@ -39,7 +39,7 @@ cc.Class({
         }
     },
 
-    onCollisionExit (other, self) {                             //tắt va chạm
+    onCollisionExit (other, self) {                             //Nếu không chạm thì ...
         if (this.node.group === cc.game.groupList[1]) {
             this._isCollider = false;
         }

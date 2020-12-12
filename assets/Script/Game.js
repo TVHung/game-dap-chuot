@@ -103,7 +103,7 @@ cc.Class({
     onLoad(){
         arr = new Array();
         arr[0] = new Array("a", "b", "e", "d", "k", "f", "g", "h"); 
-        this.arrLetter += " " + arr[0][2] + " " + arr[0][3] + " " + arr[0][4];
+        this.arrLetter += " " + arr[0][5] + " " + arr[0][6] + " " + arr[0][7];
     },
 
     start () {     
@@ -111,19 +111,17 @@ cc.Class({
         cc.debug.setDisplayStats(false);   
         this.initGameData();
         this.onPlayGame();
-        this.initEventListener();
     },
 
-    initGameData () {                           //điểm khi đập vào mèo
+    initGameData () {                           
         this._mouseDataTable = [
             {
                 mouseName: "harmful_mouse_0",
                 scoreUpdateFunc: function () {
                     this._score ++;
                     if(this.timeRollerBar.fillStart > 1/30){
-                        this.timeRollerBar.fillStart -= 1/30;       //+3s
+                        this.timeRollerBar.fillStart -= 1/30;       //+2s
                     }
-                    cc.log(this.timeRollerBar.fillStart);
                 }
             },
             {
@@ -131,26 +129,26 @@ cc.Class({
                 scoreUpdateFunc: function () {
                     this._score ++;
                     if(this.timeRollerBar.fillStart  > 1/30){
-                        this.timeRollerBar.fillStart -= 1/30;       //+3s
+                        this.timeRollerBar.fillStart -= 1/30;       //+2s
                     }
                 }
             },
             {
                 mouseName: "kind_mouse_0",
                 scoreUpdateFunc: function () {
-                    this.timeRollerBar.fillStart += 1/60;       //-2s
+                    this.timeRollerBar.fillStart += 1/60;       //-1s
                 }
             },
             {
                 mouseName: "kind_mouse_1",
                 scoreUpdateFunc: function () {
-                    this.timeRollerBar.fillStart += 1/60;       //-2s
+                    this.timeRollerBar.fillStart += 1/60;       //-1s
                 }
             },
             {
                 mouseName: "rabbit_0",
                 scoreUpdateFunc: function () {
-                    this.timeRollerBar.fillStart += 1/60;       //-2s
+                    this.timeRollerBar.fillStart += 1/60;       //-1s
                 }
             }
         ];
@@ -170,7 +168,6 @@ cc.Class({
             },200);                             
         },this);
         
-        // cc.log(this.mouseNodes);  //10 mask hole
         for (let i = 0; i < this.mouseNodes.childrenCount; i++) {
             this.mouseNodes.children[i].getChildByName("Sp Mouse").getComponent(cc.Animation).on(cc.Animation.EventType.FINISHED, this.onAnimationFinishEvent, this);
         }
@@ -186,6 +183,7 @@ cc.Class({
     //bắt đầu game
     startGame () {
         this.initMouseOutEvent();
+        this.initEventListener();
     },
     
     //Math.ceil: trả về số nguyên lớn hơn hoặc bằng nhập vào
@@ -218,7 +216,6 @@ cc.Class({
                 }
                 mouseAmount = Math.floor(Math.random() * 2) + 4;
             }
-            cc.log("so chuot: " + mouseAmount);
             this.schedule(()=> {
                 let randomNodeIndex = Math.ceil(Math.random() * (this.mouseNodes.childrenCount)) - 1;  //lấy vị trí xuất hiện con chuột 0-8
                 let randomSpriteFrameIndex = Math.floor(Math.random() * 5);
@@ -271,44 +268,30 @@ cc.Class({
     
     //bắt đầu con lăn thời gian
     startTimeRoller () {
-        var times = 3; //đếm ngược hình ảnh 3,2,1
+        var times = 3; 
         this.timeRollerBar.fillStart = 0;
-        this.schedule(()=> {    // cái này kiểu vòng lặp
-            //Khi giá trị đếm không phải là 0, hình ảnh của nút đếm ngược sẽ bị thay đổi
+        this.schedule(()=> {    
             if (times !== 0) {
                 if (!this.countDownNode) {
-                    // Khởi tạo preform của nút đếm ngược
                     this.countDownNode = cc.instantiate(this.countDown);
-                    // Thêm nút đếm ngược vào nút của thành phần hiện tại
                     this.node.addChild(this.countDownNode); 
                 }
-                // Hiển thị nút đếm ngược
                 this.countDownNode.getChildByName("Sp Num").opacity = 255;
-                // Ẩn nút cha bắt đầu trò chơi trong nút đếm ngược
                 this.countDownNode.getChildByName("Nodes Start").opacity = 0;
-                // Chuyển đổi hình ảnh thời gian theo giá trị đếm hiện tại
                 let spriteFrameName = "num_" + times;
                 this.countDownNode.getChildByName("Sp Num").getComponent(cc.Sprite).spriteFrame = this.icon.getSpriteFrame(spriteFrameName);
-                //Play the countdown sound
                 this.node.getComponent("SoundManager").playEffectSound("second", false);
             }
-            // Khi số đếm bằng 0, tức là quá trình đếm ngược kết thúc, logic bắt đầu trò chơi được thực thi
             else {
-                // Ẩn nút đếm ngược
                 this.countDownNode.getChildByName("Sp Num").opacity = 0;
-                // Hiển thị nút con bắt đầu trò chơi trong nút đếm ngược
                 this.countDownNode.getChildByName("Nodes Start").opacity = 255;
-                // Chơi trò chơi và bắt đầu hiệu ứng âm thanh.
                 this.node.getComponent("SoundManager").playEffectSound("begin", false);
-                // Nút đếm ngược thực hiện hành động che giấu
                 this.countDownNode.runAction(cc.fadeOut(1));
-                // Bắt đầu đếm ngược đến khi kết thúc trò chơi, this.timeRollerStep có thể kiểm soát tần số đếm ngược
                 this.schedule(this.countDownScheduleCallBack, this.timeRollerStep);
-                //Start the game.
                 this.startGame();
             }
             times--;
-        }, 1, 3);  //1: mỗi giây 1 lần, 3 là repeat
+        }, 1, 3);  
     },
 
     countDownScheduleCallBack () {
@@ -317,7 +300,6 @@ cc.Class({
             this.onBeCreateHammerEvent(2000, 2000);
             this.unschedule(this.countDownScheduleCallBack);  // huy tinh gio
             this.unEventListener();
-            cc.log(this._score);
             // đánh giá xem điểm số có vượt quá điểm độ khó của trò chơi hiện được thiết lập hay không, vượt quá điểm số hay không, thực hiện hàm passGame,
             if (this._score >= Level.level3) {
                 this.passGame();
@@ -362,8 +344,8 @@ cc.Class({
 
     //Sự kiện khi búa được nhấn
     onHammerClicked () {
-        this.hammerNode.angle = this.hammerNode.angle === 0 ? -50 : 0;           //góc đập chuột
-        this.node.getComponent("SoundManager").playEffectSound("hit");          //tiếng đậpc chuột
+        this.hammerNode.angle = this.hammerNode.angle === 0 ? -50 : 0;           
+        this.node.getComponent("SoundManager").playEffectSound("hit");         
         //nếu đang va chạm với con chuột và con chuột còn sống và còn tồn tại trong sp bg
         if (this._mouseNode && this._mouseNode.getComponent("ColliderManager")._isCollider && this._mouseNode.getComponent("MouseManager")._isLive && cc.find("Canvas/Sp Game Bg")) {
             if(this._mouseNode.getComponent("MouseManager")._tag === 0){
@@ -373,7 +355,6 @@ cc.Class({
             }
             this._mouseNode._scoreUpdateFunc();   
             this.showScoreEffectByTag(this._mouseNode, this._mouseNode.parent.getChildByName("Nodes Score Effect"));    //hiệu ứng cộng hoặc trừ điểm
-            this._score = this._score < 0 ? 0 : this._score;    //trường hợp nhỏ hơn 0
             this.gameScore.string = this._score;                //cập nhật điểm 
             this._mouseNode.getComponent("MouseManager")._isLive = false;    //chuyển trạng thái cho chuột
             let oldSpriteFrameName = this._mouseNode.getComponent(cc.Sprite).spriteFrame.name;      //gắn cho oldSpiteFrameName = hình ảnh con chuột bị đập
